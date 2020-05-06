@@ -7,6 +7,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import static com.bridgelabz.quantityconverter.enums.Unit.FAHRENHEIT;
+
 @Service
 public class QuantityServiceImpl implements IQuantityService {
 
@@ -18,8 +20,28 @@ public class QuantityServiceImpl implements IQuantityService {
 
     @Override
     public QuantityDTO getConversion(QuantityDTO quantityDTO) {
-        //Get Base Unit Of Current UnitType
+        double outputValue;
+        //Get base unit of current unitType
         Unit baseUnit = quantityDTO.getUnitType().baseUnit;
+        //Check if input and output units are equal
+        if (quantityDTO.getInputUnit().equals(quantityDTO.getOutputUnit()))
+            //Output same as input
+            outputValue = quantityDTO.getInputValue();
+        else if (quantityDTO.getInputUnit().equals(FAHRENHEIT))
+            //Conversion for fahrenheit to celcius
+            outputValue = (quantityDTO.getInputValue() - 32) * 5 / 9;
+        else if (quantityDTO.getInputUnit().equals(Unit.CELCIUS))
+            //Conversion for celcius to fahrenheit
+            outputValue = (quantityDTO.getInputValue() * 9 / 5) + 32;
+        else
+            //Get output value using database
+            outputValue = getOutputValue(quantityDTO, baseUnit);
+        //Set Output Value In Object And Return
+        quantityDTO.setOutputValue(outputValue);
+        return quantityDTO;
+    }
+
+    private double getOutputValue(QuantityDTO quantityDTO, Unit baseUnit) {
         //Get Conversion Factor For Converting Input Unit To Base Unit
         double inputToBaseUnit = quantityRepository.findById(quantityDTO.getInputUnit() + "_TO_"
                 + baseUnit).get().getConversionValue();
@@ -27,9 +49,6 @@ public class QuantityServiceImpl implements IQuantityService {
         double outputToBaseUnit = quantityRepository.findById(quantityDTO.getOutputUnit() + "_TO_"
                 + baseUnit).get().getConversionValue();
         //Convert Input Unit Value To Output Unit Value
-        double outputValue = inputToBaseUnit / outputToBaseUnit * quantityDTO.getInputValue();
-        //Set Output Value In Object And Return
-        quantityDTO.setOutputValue(outputValue);
-        return quantityDTO;
+        return inputToBaseUnit / outputToBaseUnit * quantityDTO.getInputValue();
     }
 }
