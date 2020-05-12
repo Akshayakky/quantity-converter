@@ -21,6 +21,8 @@ public class QuantityServiceImpl implements IQuantityService {
     @Override
     public QuantityDTO getConversion(QuantityDTO quantityDTO) {
         double outputValue;
+        double FORMULAE1 = 5 / 9;
+        double FORMULAE2 = 32;
         //Get base unit of current unitType
         Unit baseUnit = quantityDTO.getUnitType().baseUnit;
         //Check if input and output units are equal
@@ -29,10 +31,10 @@ public class QuantityServiceImpl implements IQuantityService {
             outputValue = quantityDTO.getInputValue();
         else if (quantityDTO.getInputUnit().equals(FAHRENHEIT))
             //Conversion for fahrenheit to celcius
-            outputValue = (quantityDTO.getInputValue() - 32) * 5 / 9;
+            outputValue = (quantityDTO.getInputValue() - FORMULAE2) * FORMULAE1;
         else if (quantityDTO.getInputUnit().equals(Unit.CELCIUS))
             //Conversion for celcius to fahrenheit
-            outputValue = (quantityDTO.getInputValue() * 9 / 5) + 32;
+            outputValue = (quantityDTO.getInputValue() * 1 / FORMULAE1) + FORMULAE2;
         else
             //Get output value using database
             outputValue = getOutputValue(quantityDTO, baseUnit);
@@ -43,10 +45,11 @@ public class QuantityServiceImpl implements IQuantityService {
 
     private double getOutputValue(QuantityDTO quantityDTO, Unit baseUnit) {
         //Get Conversion Factor For Converting Input Unit To Base Unit
-        double inputToBaseUnit = quantityRepository.findById(quantityDTO.getInputUnit() + "_TO_"
+        String CONNECTOR = "_TO_";
+        double inputToBaseUnit = quantityRepository.findById(quantityDTO.getInputUnit() + CONNECTOR
                 + baseUnit).get().getConversionValue();
         //Get Conversion Factor For Converting Output Unit To Base Unit
-        double outputToBaseUnit = quantityRepository.findById(quantityDTO.getOutputUnit() + "_TO_"
+        double outputToBaseUnit = quantityRepository.findById(quantityDTO.getOutputUnit() + CONNECTOR
                 + baseUnit).get().getConversionValue();
         //Convert Input Unit Value To Output Unit Value
         return inputToBaseUnit / outputToBaseUnit * quantityDTO.getInputValue();

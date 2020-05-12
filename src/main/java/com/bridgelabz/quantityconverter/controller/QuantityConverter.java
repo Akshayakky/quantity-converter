@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/quantitycontroller")
-public class QuantityConversionController {
+@RequestMapping("/quantityconverter")
+public class QuantityConverter {
 
     @Autowired
     private IQuantityService quantityService;
