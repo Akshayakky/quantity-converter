@@ -1,7 +1,7 @@
 package com.bridgelabz.quantityconverter.controller;
 
 import com.bridgelabz.quantityconverter.dto.QuantityDTO;
-import com.bridgelabz.quantityconverter.service.IQuantityService;
+import com.bridgelabz.quantityconverter.service.IQuantity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class QuantityConverter {
 
     @Autowired
-    private IQuantityService quantityService;
+    private IQuantity quantityService;
 
     @GetMapping("/convert")
     public QuantityDTO quantity(@RequestBody QuantityDTO quantityDTO) {

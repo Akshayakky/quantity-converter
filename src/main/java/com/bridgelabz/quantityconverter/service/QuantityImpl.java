@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import static com.bridgelabz.quantityconverter.enums.Unit.FAHRENHEIT;
 
 @Service
-public class QuantityServiceImpl implements IQuantityService {
+public class QuantityImpl implements IQuantity {
 
     @Autowired
     QuantityRepository quantityRepository;
